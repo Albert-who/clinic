@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Добавление цены для услуги</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.service) }}
+    {{ form_row(form.price) }}
+
+    <button type="submit">Добавить</button>
+    {{ form_end(form) }}
+{% endblock %}

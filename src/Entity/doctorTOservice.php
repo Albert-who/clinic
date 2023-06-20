@@ -24,7 +24,7 @@ class DoctorToService
     private $DuserId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Service", fetch="LAZY")
      * @ORM\JoinColumn(name="service_id", referencedColumnName="id")
      */
     private $serviceId;
@@ -36,25 +36,29 @@ class DoctorToService
     }
 
     // Геттер и сеттер для связи с сущностью User
-    public function getDuser(): ?int
+    public function getDoctor(): ?User
     {
         return $this->DuserId;
     }
-
-    public function setDuser(int $Duser): void
+    
+    public function setDoctor(?User $doctor): void
     {
-        $this->DuserId = $Duser;
+        $this->DuserId = $doctor;
     }
 
     // Геттер и сеттер для связи с сущностью Service
-    public function getService(): ?int
+    public function getService(): ?Service
     {
         return $this->serviceId;
     }
 
-    public function setService(int $service): void
+    public function setService(?Service $service): void
     {
         $this->serviceId = $service;
     }
-    
+
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId ? $this->serviceId->getId() : null;
+    }
 }

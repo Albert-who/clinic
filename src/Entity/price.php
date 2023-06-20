@@ -41,25 +41,25 @@ class Price
     }
 
     // Геттер и сеттер для связи с полем "Duser_id"
-    public function getDuser(): ?int
+    public function getDoctor(): ?User
     {
         return $this->DuserId;
     }
 
-    public function setDuser(?int $DuserId): void
+    public function setDoctor(?User $doctor): void
     {
-        $this->DuserId = $DuserId;
+        $this->DuserId = $doctor;
     }
 
     // Геттер и сеттер для связи с полем "service_id"
-    public function getService(): ?int
+    public function getService(): ?Service
     {
         return $this->serviceId;
     }
 
-    public function setService(?int $serviceId): void
+    public function setService(?Service $service): void
     {
-        $this->serviceId = $serviceId;
+        $this->serviceId = $service;
     }
 
     // Геттер и сеттер для поля "price"
@@ -71,5 +71,29 @@ class Price
     public function setPrice(float $price): void
     {
         $this->price = $price;
+    }
+
+    public function getDuserId(): ?User
+    {
+        return $this->DuserId;
+    }
+
+    public function setDuserId(?User $DuserId): static
+    {
+        $this->DuserId = $DuserId;
+
+        return $this;
+    }
+
+    public function getServiceId(): ?Service
+    {
+        return $this->serviceId;
+    }
+
+    public function setServiceId(?Service $serviceId): static
+    {
+        $this->serviceId = $serviceId;
+
+        return $this;
     }
 }

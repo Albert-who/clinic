@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -10,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
@@ -30,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     private $isDoctor;
 
@@ -68,14 +70,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $hashedPassword;
     }
 
-    public function isDoctor(): bool
+    public function IsDoctor(): bool
     {
-        return $this->isDoctor;
+        return $this->isDoctor ?? false;
     }
 
-    public function setDoctor(bool $isDoctor): void
+    public function setIsDoctor(?bool $isDoctor): void
     {
-        $this->isDoctor = $isDoctor;
+        $this->isDoctor = $isDoctor ?? false;
     }
 
     /**
@@ -87,7 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return ['ROLE_DOCTOR'];
         }
 
-        return ['ROLE_PATIENT'];
+        return ['ROLE_USER'];
     }
 
     public function hashPassword(string $password): string
