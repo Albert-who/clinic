@@ -1,7 +1,15 @@
+{# templates/doctor/index.html.twig #}
+
 {% extends 'base.html.twig' %}
 
 {% block body %}
     <h1>Добавление цены для услуги</h1>
+
+    {% for flashMessage in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
 
     {{ form_start(form) }}
     {{ form_row(form.service) }}

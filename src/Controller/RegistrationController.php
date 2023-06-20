@@ -41,15 +41,11 @@ class RegistrationController extends AbstractController
              // Устанавливаем значение isDoctor на основе значения из формы
              $user->setIsDoctor($form->get('isDoctor')->getData());
 
-            // Дополнительная логика или модификации сущности User перед сохранением
-
             // Добавляем сущность User в Unit of Work для сохранения
             $entityManager->persist($user);
             
             // Сохраняем изменения в базе данных
             $entityManager->flush();
-
-            // Выполняем дополнительные действия, например, отправку электронной почты
 
             // Аутентифицируем пользователя и перенаправляем на соответствующую страницу
             return $userAuthenticator->authenticateUser(

@@ -49,6 +49,8 @@ class DoctorController extends AbstractController
             $this->entityManager->persist($price);
             $this->entityManager->flush();
 
+            $this->addFlash('success', 'Услуга успешно добавлена.');
+
             return $this->redirectToRoute('app_doctor');
         }
 
