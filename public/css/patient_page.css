@@ -1,0 +1,68 @@
+/* patient_page.css */
+
+.placeholder-image {
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.loguot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
+.loguot .btn-logout {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+.loguot .btn-logout:hover {
+  background-color: #cc0000;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: rgba(241, 241, 241, 0.5);
+  display: grid;
+  grid-gap: 10px;
+  justify-items: center;
+}
+
+.service-select,
+.date-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.service-select {
+  grid-column: 1 / span 2;
+}
+
+label[for="{{ form.date.vars.id }}"] {
+  grid-column: 1 / span 2;
+}
+
+#lowest-price {
+  text-align: center;
+}

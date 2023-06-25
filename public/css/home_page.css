@@ -1,0 +1,56 @@
+/* home_page.css */
+
+body {
+  line-height: 1.5;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-container {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.footer {
+  background-color: #ab9e9eda;
+  padding: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-top: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.btn-container .btn {
+  margin-left: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+.btn-container .btn:hover {
+  background-color: #45a049;
+}

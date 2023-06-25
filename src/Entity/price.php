@@ -63,7 +63,7 @@ class Price
     }
 
     // Геттер и сеттер для поля "price"
-    public function getPrice(): ?float
+    public function getPrice(): ?float 
     {
         return $this->price;
     }

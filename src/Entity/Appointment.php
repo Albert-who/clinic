@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="appointments")
@@ -23,13 +22,13 @@ class Appointment
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="Duser_id", referencedColumnName="id")
      */
-    private $DuserId;
+    private $Duser;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $userID;
+    private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity="Service")
@@ -48,35 +47,35 @@ class Appointment
         return $this->id;
     }
 
-    // Геттер и сеттер для поля "dUser"
-    public function getDUser(): ?int
+    // Геттер и сеттер для поля "Duser"
+    public function getDUser(): ?User
     {
-        return $this->DuserId;
+        return $this->Duser;
     }
 
-    public function setDUser(?int $DuserId): void
+    public function setDUser(?User $Duser): void
     {
-        $this->DuserId = $DuserId;
+        $this->Duser = $Duser;
     }
 
     // Геттер и сеттер для поля "user"
-    public function getUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->userID;
+        return $this->userId;
     }
 
-    public function setUser(?int $userID): void
+    public function setUser(?User $userId): void
     {
-        $this->userID = $userID;
+        $this->userId = $userId;
     }
 
     // Геттер и сеттер для поля "service"
-    public function getService(): ?int
+    public function getService(): ?Service
     {
         return $this->serviceId;
     }
 
-    public function setService(?int $serviceId): void
+    public function setService(?Service $serviceId): void
     {
         $this->serviceId = $serviceId;
     }

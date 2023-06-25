@@ -1,8 +1,17 @@
 {# templates/doctor/index.html.twig #}
 
 {% extends 'base.html.twig' %}
+{% block title %}Укажите цену для услуги!{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/doctor_page.css') }}">
+{% endblock %}
 
 {% block body %}
+ <img src="{{ asset('images/doctor.avif') }}" alt="Изображение" class="placeholder-image">
+    <div class="loguot">
+        <a href="{{ path('app_logout') }}" class="btn btn-logout">Выйти</a>
+    </div>
     <h1>Добавление цены для услуги</h1>
 
     {% for flashMessage in app.flashes('success') %}

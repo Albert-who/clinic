@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Приветствуем Вас!{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home_page.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="content-container">
+        <h1>Добро пожаловать</h1>
+        <p>Вы находитесь на нашем сайте. Предполагается что здесь вы сможете найти полезную информацию и многое другое.</p>
+        <img src="{{ asset('images/woman.jpg') }}" alt="Изображение" class="placeholder-image">
+    </div>
+    <div class="btn-container">
+        <a href="{{ path('app_login') }}" class="btn btn-primary">Войти</a>
+        <a href="{{ path('app_register') }}" class="btn btn-primary">Зарегистрироваться</a>
+    </div>
+    <footer class="footer">
+     <div class="container">
+        Информация о больнице
+     </div>
+  </footer>
+{% endblock %}

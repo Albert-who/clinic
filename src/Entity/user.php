@@ -45,7 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-    // Возвращает уникальный идентификатор пользователя, в данном случае используется поле "id"
     return (string) $this->id;
     }
 
@@ -66,11 +65,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): void
     {
-        $hashedPassword = $this->hashPassword($password);
-        $this->password = $hashedPassword;
+        $this->password = $password;
     }
+    
 
-    public function IsDoctor(): bool
+    public function isDoctor(): bool
     {
         return $this->isDoctor ?? false;
     }
@@ -80,9 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isDoctor = $isDoctor ?? false;
     }
 
-    /**
-     * @inheritDoc
-     */
+
     public function getRoles(): array
     {
         if ($this->isDoctor) {
@@ -92,15 +89,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return ['ROLE_USER'];
     }
 
-    public function hashPassword(string $password): string
-    {
-        // Хеширование пароля
-        return password_hash($password, PASSWORD_DEFAULT);
-    }
+    // public function hashPassword(string $password): string
+    // {
+    //     // Хеширование пароля
+    //     return password_hash($password, PASSWORD_DEFAULT);
+    // }
 
     public function isPasswordValid(string $password): bool
-    {
-        // Проверка соответствия хешированного пароля
-        return password_verify($password, $this->getPassword());
-    }
+{
+    return password_verify($password, $this->getPassword());
+}
 }

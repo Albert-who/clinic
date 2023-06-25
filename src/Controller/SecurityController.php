@@ -28,7 +28,7 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         if ($this->getUser()) {
-            if ($this->getUser()->IsDoctor()) {
+            if ($this->getUser()->isDoctor()) {
                 return new RedirectResponse($this->urlGenerator->generate('app_doctor'));
             } else {
                 return new RedirectResponse($this->urlGenerator->generate('app_user'));

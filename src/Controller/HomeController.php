@@ -5,12 +5,12 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestController extends AbstractController{
+class HomeController extends AbstractController{
 
     /**
      * @Route("/",name="home_page")
      */
     function indexAction(){
-        return $this->render(view:'test/index.html.twig', parameters: ['a'=> 123]);
+        return $this->render(view:'home/index.html.twig');
     }
 }
