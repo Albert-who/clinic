@@ -134,9 +134,14 @@ class UserController extends AbstractController
         } else {
             $userId = null;
             $availableDates = [];
+            $unavailableDates = [];
         }
 
-        return new JsonResponse(['availableDates' => $availableDates, 'DuserId' => $userId]);
+        return new JsonResponse([
+            'availableDates' => $availableDates,
+            'unavailableDates' => $unavailableDates,
+            'DuserId' => $userId
+        ]);
     }
 
 

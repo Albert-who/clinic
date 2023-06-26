@@ -79,13 +79,21 @@
             .then(data => {
                 const availableDates = data.availableDates;
                 const DuserId = data.DuserId;
+                const unavailableDates = data.unavailableDates;
+
                 dateSelect.innerHTML = '';
                 availableDates.forEach(function(date) {
-                    const option = document.createElement('option');
-                    option.value = date;
-                    option.text = date;
-                    dateSelect.appendChild(option);
-                });
+                const option = document.createElement('option');
+                option.value = date;
+                option.text = date;
+
+                // Проверить, является ли текущая дата отключенной
+                if (unavailableDates.includes(date)) {
+                    option.disabled = true;
+                }
+
+                dateSelect.appendChild(option);
+            });
                 const DuserIdField = document.querySelector('#{{ form.DuserId.vars.id }}');
                 DuserIdField.value = DuserId;
                 dateSelect.disabled = false; // Разрешить выбор даты после обновления списка доступных дат
