@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\DoctorToService;
 use App\Entity\Price;
-use App\Form\ServiceFormType;
+use App\Entity\Service;
+use App\Form\AddServiceFormType;
+use App\Form\DeleteServiceFormType;
+use App\Form\SetPriceFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,39 +26,71 @@ class DoctorController extends AbstractController
     /**
      * @Route("/doctor", name="app_doctor")
      */
-    public function addPrice(Request $request): Response
+    public function index(Request $request): Response
     {
-        $form = $this->createForm(ServiceFormType::class);
-        $form->handleRequest($request);
+        $addServiceForm = $this->createForm(AddServiceFormType::class);
+        $addServiceForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $selectedService = $form->get('service')->getData();
-            $priceValue = $form->get('price')->getData();
+        $setPriceForm = $this->createForm(SetPriceFormType::class);
+        $setPriceForm->handleRequest($request);
 
-            // Создание новой записи DoctorToService
-            $doctorToService = new DoctorToService();
-            $doctorToService->setDoctor($this->getUser()); // Установка текущего пользователя (доктора)
-            $doctorToService->setService($selectedService);
+        $deleteServiceForm = $this->createForm(DeleteServiceFormType::class);
+        $deleteServiceForm->handleRequest($request);
 
-            $this->entityManager->persist($doctorToService);
+        if ($addServiceForm->isSubmitted() && $addServiceForm->isValid()) {
+            $service = new Service(); // Создание новой сущности Service
+            $serviceName = $addServiceForm->get('name')->getData();
+
+            $service->setName($serviceName); // Установка имени услуги
+
+            $this->entityManager->persist($service);
             $this->entityManager->flush();
 
-            // Создание новой записи Price
-            $price = new Price();
-            $price->setDoctor($this->getUser()); // Установка текущего пользователя (доктора)
-            $price->setService($selectedService);
-            $price->setPrice($priceValue);
+            $this->addFlash('success', 'Новая услуга успешно добавлена.');
 
+            return $this->redirectToRoute('app_doctor');
+        }
+
+        if ($setPriceForm->isSubmitted() && $setPriceForm->isValid()) {
+            $selectedService = $setPriceForm->get('service')->getData();
+            $priceValue = $setPriceForm->get('price')->getData();
+
+            $doctorToService = new DoctorToService(); // Создание новой сущности DoctorToService
+            $price = new Price(); // Создание новой сущности Price
+
+            $doctorToService->setService($selectedService); // Установка выбранной услуги
+            $doctorToService->setDoctor($this->getUser()); // Установка текущего пользователя как доктора
+
+            $price->setService($selectedService); // Установка выбранной услуги
+            $price->setPrice($priceValue); // Установка цены
+
+            $this->entityManager->persist($doctorToService);
             $this->entityManager->persist($price);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Услуга успешно добавлена.');
+            $this->addFlash('success', 'Цена для услуги успешно установлена.');
+
+            return $this->redirectToRoute('app_doctor');
+        }
+
+        if ($deleteServiceForm->isSubmitted() && $deleteServiceForm->isValid()) {
+            $selectedServices = $deleteServiceForm->get('service')->getData();
+
+            foreach ($selectedServices as $selectedService) {
+                $this->entityManager->remove($selectedService);
+            }
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Выбранные услуги успешно удалены.');
 
             return $this->redirectToRoute('app_doctor');
         }
 
         return $this->render('doctor/index.html.twig', [
-            'form' => $form->createView(),
+            'addServiceForm' => $addServiceForm->createView(),
+            'setPriceForm' => $setPriceForm->createView(),
+            'deleteServiceForm' => $deleteServiceForm->createView(),
         ]);
     }
 }

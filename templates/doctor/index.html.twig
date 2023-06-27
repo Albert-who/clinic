@@ -1,18 +1,21 @@
 {# templates/doctor/index.html.twig #}
 
 {% extends 'base.html.twig' %}
-{% block title %}Укажите цену для услуги!{% endblock %}
+
+{% block title %}Добро пожаловать, Доктор{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/doctor_page.css') }}">
 {% endblock %}
 
 {% block body %}
- <img src="{{ asset('images/doctor.avif') }}" alt="Изображение" class="placeholder-image">
-    <div class="loguot">
+    <img src="{{ asset('images/doctor.avif') }}" alt="Изображение" class="placeholder-image">
+
+    <div class="logout">
         <a href="{{ path('app_logout') }}" class="btn btn-logout">Выйти</a>
     </div>
-    <h1>Добавление цены для услуги</h1>
+
+    <h1>Редактирование услуг</h1>
 
     {% for flashMessage in app.flashes('success') %}
         <div class="alert alert-success">
@@ -20,10 +23,26 @@
         </div>
     {% endfor %}
 
-    {{ form_start(form) }}
-    {{ form_row(form.service) }}
-    {{ form_row(form.price) }}
-
+    {# <h2>Добавить новую услугу</h2> #}
+    {{ form_start(addServiceForm) }}
+    {{ form_row(addServiceForm.name) }}
     <button type="submit">Добавить</button>
-    {{ form_end(form) }}
+    {{ form_end(addServiceForm) }}
+
+    {# <h2>Установить цену для услуги</h2> #}
+    {{ form_start(setPriceForm) }}
+    {{ form_row(setPriceForm.service) }}
+    {{ form_row(setPriceForm.price) }}
+    <button type="submit">Установить цену</button>
+    {{ form_end(setPriceForm) }}
+
+    {# <h2>Удалить услугу</h2> #}
+    {{ form_start(deleteServiceForm) }}
+    {{ form_row(deleteServiceForm.service, {'attr': {'multiple': 'multiple', 'title': 'Чтобы удалить несколько услуг нажмите ctrl+лкм'}}) }}
+
+    <button type="submit">Удалить</button>
+    {{ form_end(deleteServiceForm) }}
+
+
 {% endblock %}
+

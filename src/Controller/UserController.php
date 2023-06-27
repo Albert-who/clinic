@@ -99,38 +99,52 @@ class UserController extends AbstractController
 
             $unavailableDates = $query->getResult();
 
-            if (empty($unavailableDates)) {
-                // Если нет недоступных дат, делаем все даты на ближайший месяц доступными
-                $startDate = new \DateTime();
-                $endDate = (new \DateTime())->modify('+1 month');
+            $startDate = new \DateTime();
+            $endDate = (new \DateTime())->modify('+1 month');
 
-                $interval = new \DateInterval('P1D');
-                $dateRange = new \DatePeriod($startDate, $interval, $endDate);
+            $interval = new \DateInterval('P1D');
+            $dateRange = new \DatePeriod($startDate, $interval, $endDate);
 
-                $availableDates = [];
-                foreach ($dateRange as $date) {
-                    $availableDates[] = $date->format('Y-m-d');
-                }
-            } else {
-                // Если есть недоступные даты, делаем все даты, кроме недоступных, на ближайший месяц доступными
-                $startDate = new \DateTime();
-                $endDate = (new \DateTime())->modify('+1 month');
-
-                $interval = new \DateInterval('P1D');
-                $dateRange = new \DatePeriod($startDate, $interval, $endDate);
-
-                $availableDates = [];
-                $unavailableDates = array_map(function ($date) {
-                    return $date['date']->format('Y-m-d');
-                }, $unavailableDates);
-
-                foreach ($dateRange as $date) {
-                    $formattedDate = $date->format('Y-m-d');
-                    if (!in_array($formattedDate, $unavailableDates)) {
-                        $availableDates[] = $formattedDate;
-                    }
-                }
+            $availableDates = [];
+            foreach ($dateRange as $date) {
+                $availableDates[] = $date->format('Y-m-d');
             }
+
+            $unavailableDates = array_map(function ($date) {
+                        return $date['date']->format('Y-m-d');
+                    }, $unavailableDates);
+            // if (empty($unavailableDates)) {
+            //     // Если нет недоступных дат, делаем все даты на ближайший месяц доступными
+            //     $startDate = new \DateTime();
+            //     $endDate = (new \DateTime())->modify('+1 month');
+
+            //     $interval = new \DateInterval('P1D');
+            //     $dateRange = new \DatePeriod($startDate, $interval, $endDate);
+
+            //     $availableDates = [];
+            //     foreach ($dateRange as $date) {
+            //         $availableDates[] = $date->format('Y-m-d');
+            //     }
+            // } else {
+            //     // Если есть недоступные даты, делаем все даты, кроме недоступных, на ближайший месяц доступными
+            //     $startDate = new \DateTime();
+            //     $endDate = (new \DateTime())->modify('+1 month');
+
+            //     $interval = new \DateInterval('P1D');
+            //     $dateRange = new \DatePeriod($startDate, $interval, $endDate);
+
+            //     $availableDates = [];
+            //     $unavailableDates = array_map(function ($date) {
+            //         return $date['date']->format('Y-m-d');
+            //     }, $unavailableDates);
+
+            //     foreach ($dateRange as $date) {
+            //         $formattedDate = $date->format('Y-m-d');
+            //         if (!in_array($formattedDate, $unavailableDates)) {
+            //             $availableDates[] = $formattedDate;
+            //         }
+            //     }
+            // }
         } else {
             $userId = null;
             $availableDates = [];
