@@ -21,7 +21,7 @@
                 'data-url-price': path('get_lowest_price', {'_format': 'json'})  
             }
         }) }}
-        <div>
+        
             {{ form_label(form.date) }}
             {{ form_widget(form.date, { 
                 'attr': {
@@ -30,9 +30,10 @@
                     'style': 'background-color: #f1f1f1;'
                 }
             }) }}
-        </div>
+        
         {{ form_widget(form.DuserId) }}
         {{ form_row(form.save) }}
+        
     {{ form_end(form) }}
 
     {% if lowestPrice is not null %}
@@ -47,6 +48,7 @@
         const serviceSelect = document.querySelector('.service-select');
         const dateSelect = document.querySelector('.date-select');
         const lowestPriceDiv = document.querySelector('#lowest-price');
+        
 
         serviceSelect.addEventListener('change', function() {
             const selectedServiceId = this.value;
@@ -77,28 +79,51 @@
             })
             .then(response => response.json())
             .then(data => {
-                const availableDates = data.availableDates;
+                //const availableDates = data.availableDates;
                 const DuserId = data.DuserId;
                 const unavailableDates = data.unavailableDates;
+                window.unavailableDates = unavailableDates;
+                console.log(Object.values(unavailableDates));
 
-                dateSelect.innerHTML = '';
-                availableDates.forEach(function(date) {
-                const option = document.createElement('option');
-                option.value = date;
-                option.text = date;
-
-                // Проверить, является ли текущая дата отключенной
-                if (unavailableDates.includes(date)) {
-                    option.disabled = true;
-                }
-
-                dateSelect.appendChild(option);
-            });
                 const DuserIdField = document.querySelector('#{{ form.DuserId.vars.id }}');
                 DuserIdField.value = DuserId;
                 dateSelect.disabled = false; // Разрешить выбор даты после обновления списка доступных дат
-                dateSelect.style.backgroundColor = ''; // Удалить стиль фона
+                dateSelect.style.backgroundColor = ''; // Удалить стиль фона               
+                
             });
         });
+        dateSelect.addEventListener('change', function() {
+                const selectedDate = this.value;
+                const currentDate = new Date().toISOString().split('T')[0];
+
+                // Сброс сообщений об ошибке
+                const errorMessage = document.querySelector('.error-message');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+
+                // Проверка, выбрана ли дата из прошлого
+                if (selectedDate < currentDate) {
+                    dateSelect.value = '';        
+                    showErrorMessage('У нас нет машины времени, дата в прошлом, выберите другую дату :)');
+                    return;
+                }
+
+                // Проверка, является ли выбранная дата недоступной
+                if (Object.values(unavailableDates).includes(selectedDate)) {
+                    dateSelect.value = '';
+                    showErrorMessage('Доктор не может принять в этот день, выберите другую дату!');
+                    
+                }
+            });
+
+            function showErrorMessage(message) {
+                const errorMessage = document.createElement('p');
+                errorMessage.classList.add('error-message');
+                errorMessage.textContent = message;
+                errorMessage.style.color = 'red';
+                dateSelect.parentNode.insertBefore(errorMessage, dateSelect.nextSibling);
+            }
+                
     </script>
 {% endblock %}

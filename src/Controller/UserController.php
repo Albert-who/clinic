@@ -28,7 +28,7 @@ class UserController extends AbstractController
         $DuserId = null;
         $freeDates = [];
         $lowestPrice = null;
-        $availableDates = [];
+        $allDates = [];
 
         $appointment = new Appointment();
 
@@ -60,7 +60,7 @@ class UserController extends AbstractController
             'freeDates' => $freeDates,
             'lowestPrice' => $lowestPrice,
             'selectedService' => $selectedService,
-            'availableDates' => $availableDates,
+            'allDates' => $allDates,
             
         ]);
     }
@@ -99,20 +99,38 @@ class UserController extends AbstractController
 
             $unavailableDates = $query->getResult();
 
-            $startDate = new \DateTime();
-            $endDate = (new \DateTime())->modify('+1 month');
+            // $startDate = new \DateTime();
+            // $endDate = (new \DateTime())->modify('+1 month');
 
-            $interval = new \DateInterval('P1D');
-            $dateRange = new \DatePeriod($startDate, $interval, $endDate);
+            // $interval = new \DateInterval('P1D');
+            // $dateRange = new \DatePeriod($startDate, $interval, $endDate);
 
-            $availableDates = [];
-            foreach ($dateRange as $date) {
-                $availableDates[] = $date->format('Y-m-d');
-            }
+            // $allDates = [];
+            // foreach ($dateRange as $date) {
+            //     $allDates[] = $date->format('Y-m-d');
+            // }
 
+            // Получение текущей даты
+            $currentDate = new \DateTime();
+            $currentDate->setTime(0, 0, 0);
+
+            // Фильтрация дат, оставляя только те, которые настоящие или будущие
+            $unavailableDates = array_filter($unavailableDates, function ($date) use ($currentDate) {
+                return $date['date'] >= $currentDate;
+            });
+    
             $unavailableDates = array_map(function ($date) {
-                        return $date['date']->format('Y-m-d');
-                    }, $unavailableDates);
+                return $date['date']->format('Y-m-d');
+            }, $unavailableDates);
+    
+            // Фильтруем доступные даты, оставляя только те, которых нет в недоступных датах
+            // $availableDates = array_diff($allDates, $unavailableDates);
+    
+            return new JsonResponse([
+                // 'availableDates' => $availableDates,
+                'unavailableDates' => $unavailableDates,
+                'DuserId' => $userId
+            ]);
             // if (empty($unavailableDates)) {
             //     // Если нет недоступных дат, делаем все даты на ближайший месяц доступными
             //     $startDate = new \DateTime();
@@ -147,12 +165,12 @@ class UserController extends AbstractController
             // }
         } else {
             $userId = null;
-            $availableDates = [];
+            // $allDates = [];
             $unavailableDates = [];
         }
 
         return new JsonResponse([
-            'availableDates' => $availableDates,
+            // 'allDates' => $allDates,
             'unavailableDates' => $unavailableDates,
             'DuserId' => $userId
         ]);
