@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\DoctorToService;
 use App\Entity\Price;
 use App\Entity\Service;
-use App\Entity\User;
+use App\Entity\Appointment;
 use App\Form\AddServiceFormType;
 use App\Form\DeleteServiceFormType;
 use App\Form\SetPriceFormType;
@@ -69,16 +69,20 @@ class DoctorController extends AbstractController
             $selectedService = $setPriceForm->get('service')->getData();
             $priceValue = $setPriceForm->get('price')->getData();
 
-            $doctorToService = new DoctorToService(); // Создание новой сущности DoctorToService
-            $price = new Price(); // Создание новой сущности Price
-
-            $doctorToService->setService($selectedService); // Установка выбранной услуги
-            $doctorToService->setDoctor($user); // Установка текущего пользователя как доктора
-
-            $price->setService($selectedService); // Установка выбранной услуги
-            $price->setPrice($priceValue); // Установка цены
+            // Создание новой записи DoctorToService
+            $doctorToService = new DoctorToService();
+            $doctorToService->setDoctor($this->getUser()); // Установка текущего пользователя (доктора)
+            $doctorToService->setService($selectedService);
 
             $this->entityManager->persist($doctorToService);
+            $this->entityManager->flush();
+
+            // Создание новой записи Price
+            $price = new Price();
+            $price->setDoctor($this->getUser()); // Установка текущего пользователя (доктора)
+            $price->setService($selectedService);
+            $price->setPrice($priceValue);
+
             $this->entityManager->persist($price);
             $this->entityManager->flush();
 
@@ -88,16 +92,43 @@ class DoctorController extends AbstractController
         }
 
         if ($deleteServiceForm->isSubmitted() && $deleteServiceForm->isValid()) {
-            $selectedServices = $deleteServiceForm->get('service')->getData();
-
-            foreach ($selectedServices as $selectedService) {
+            $selectedService = $deleteServiceForm->get('service')->getData();
+    
+            $appointmentRepository = $this->entityManager->getRepository(Appointment::class);
+            $priceRepository = $this->entityManager->getRepository(Price::class);
+        
+            // Проверка наличия записей в таблице Appointment
+            $appointments = $appointmentRepository->findBy(['serviceId' => $selectedService]);
+        
+            if (!empty($appointments)) {
+                $this->addFlash('error', 'Услуга не может быть удалена, так как пациенты записанные на эту услугу.');
+            } else {
+                // Проверка наличия записей в таблице Price
+                $prices = $priceRepository->findBy(['serviceId' => $selectedService]);
+        
+                if (!empty($prices)) {
+                    foreach ($prices as $price) {
+                        $this->entityManager->remove($price);
+                    }
+                    $this->entityManager->flush();
+                }
+        
+                // Удаление записей в таблице DoctorToService
+                $doctorToServiceRepository = $this->entityManager->getRepository(DoctorToService::class);
+                $doctorToServices = $doctorToServiceRepository->findBy(['serviceId' => $selectedService]);
+        
+                foreach ($doctorToServices as $doctorToService) {
+                    $this->entityManager->remove($doctorToService);
+                }
+                $this->entityManager->flush();
+        
+                // Удаление записи в таблице Service
                 $this->entityManager->remove($selectedService);
+                $this->entityManager->flush();
+        
+                $this->addFlash('success', 'Услуга успешно удалена.');
             }
-
-            $this->entityManager->flush();
-
-            $this->addFlash('success', 'Выбранные услуги успешно удалены.');
-
+        
             return $this->redirectToRoute('app_doctor');
         }
 

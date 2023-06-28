@@ -17,11 +17,6 @@
 
     <h1>Редактирование услуг</h1>
 
-    {% for flashMessage in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
 
     {{ form_start(addServiceForm) }}
     {{ form_row(addServiceForm.name) }}
@@ -35,11 +30,22 @@
     {{ form_end(setPriceForm) }}
 
     {{ form_start(deleteServiceForm) }}
-    {{ form_row(deleteServiceForm.service, {'attr': {'multiple': 'multiple', 'title': 'Чтобы удалить несколько услуг нажмите ctrl+лкм'}}) }}
+    {{ form_row(deleteServiceForm.service,) }}
 
     <button type="submit">Удалить</button>
     {{ form_end(deleteServiceForm) }}
 
+{% for flashMessage in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
+
+{% for flashMessage in app.flashes('error') %}
+    <div class="alert alert-error">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
 
 {% endblock %}
 

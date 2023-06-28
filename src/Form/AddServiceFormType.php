@@ -14,7 +14,7 @@ class AddServiceFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Название услуги:',
+                'label' => 'Введите название новой услуги: ',
             ]);
     }
 
