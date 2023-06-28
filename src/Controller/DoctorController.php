@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DoctorToService;
 use App\Entity\Price;
 use App\Entity\Service;
+use App\Entity\User;
 use App\Form\AddServiceFormType;
 use App\Form\DeleteServiceFormType;
 use App\Form\SetPriceFormType;
@@ -26,7 +27,7 @@ class DoctorController extends AbstractController
     /**
      * @Route("/doctor", name="app_doctor")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $addServiceForm = $this->createForm(AddServiceFormType::class);
         $addServiceForm->handleRequest($request);
@@ -36,6 +37,19 @@ class DoctorController extends AbstractController
 
         $deleteServiceForm = $this->createForm(DeleteServiceFormType::class);
         $deleteServiceForm->handleRequest($request);
+
+        $user = $this->getUser(); // Получаем текущего пользователя
+        $userId = $user->getUserIdentifier(); 
+
+        $query = $entityManager->createQueryBuilder()
+            ->select('u.username')
+            ->from('App\Entity\User', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        $username = $query->getSingleScalarResult();
+        
 
         if ($addServiceForm->isSubmitted() && $addServiceForm->isValid()) {
             $service = new Service(); // Создание новой сущности Service
@@ -59,7 +73,7 @@ class DoctorController extends AbstractController
             $price = new Price(); // Создание новой сущности Price
 
             $doctorToService->setService($selectedService); // Установка выбранной услуги
-            $doctorToService->setDoctor($this->getUser()); // Установка текущего пользователя как доктора
+            $doctorToService->setDoctor($user); // Установка текущего пользователя как доктора
 
             $price->setService($selectedService); // Установка выбранной услуги
             $price->setPrice($priceValue); // Установка цены
@@ -91,6 +105,7 @@ class DoctorController extends AbstractController
             'addServiceForm' => $addServiceForm->createView(),
             'setPriceForm' => $setPriceForm->createView(),
             'deleteServiceForm' => $deleteServiceForm->createView(),
+            'username' => $username,
         ]);
     }
 }

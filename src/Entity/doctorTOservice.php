@@ -46,6 +46,8 @@ class DoctorToService
         $this->DuserId = $doctor;
     }
 
+    
+
     // Геттер и сеттер для связи с сущностью Service
     public function getService(): ?Service
     {

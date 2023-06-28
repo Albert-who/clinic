@@ -2,7 +2,7 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Добро пожаловать, Доктор{% endblock %}
+{% block title %}Добро пожаловать, {{username}}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/doctor_page.css') }}">
@@ -23,20 +23,17 @@
         </div>
     {% endfor %}
 
-    {# <h2>Добавить новую услугу</h2> #}
     {{ form_start(addServiceForm) }}
     {{ form_row(addServiceForm.name) }}
     <button type="submit">Добавить</button>
     {{ form_end(addServiceForm) }}
 
-    {# <h2>Установить цену для услуги</h2> #}
     {{ form_start(setPriceForm) }}
     {{ form_row(setPriceForm.service) }}
     {{ form_row(setPriceForm.price) }}
     <button type="submit">Установить цену</button>
     {{ form_end(setPriceForm) }}
 
-    {# <h2>Удалить услугу</h2> #}
     {{ form_start(deleteServiceForm) }}
     {{ form_row(deleteServiceForm.service, {'attr': {'multiple': 'multiple', 'title': 'Чтобы удалить несколько услуг нажмите ctrl+лкм'}}) }}
 

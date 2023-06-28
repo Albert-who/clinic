@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Appointment;
-use App\Entity\Price;
-use App\Entity\Service;
 use App\Entity\User;
 use App\Form\AppointmentType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,8 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Doctrine\ORM\Query; 
 
 class UserController extends AbstractController
 {
@@ -23,7 +19,16 @@ class UserController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager)
     {
         $user = $this->getUser(); // Получаем текущего пользователя
-        $selectedUser = $user->getUserIdentifier();
+        $userId = $user->getUserIdentifier(); 
+
+        $query = $entityManager->createQueryBuilder()
+            ->select('u.username')
+            ->from('App\Entity\User', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        $username = $query->getSingleScalarResult();
         $selectedService = null;
         $DuserId = null;
         $freeDates = [];
@@ -61,6 +66,7 @@ class UserController extends AbstractController
             'lowestPrice' => $lowestPrice,
             'selectedService' => $selectedService,
             'allDates' => $allDates,
+            'username' => $username,
             
         ]);
     }
@@ -99,17 +105,6 @@ class UserController extends AbstractController
 
             $unavailableDates = $query->getResult();
 
-            // $startDate = new \DateTime();
-            // $endDate = (new \DateTime())->modify('+1 month');
-
-            // $interval = new \DateInterval('P1D');
-            // $dateRange = new \DatePeriod($startDate, $interval, $endDate);
-
-            // $allDates = [];
-            // foreach ($dateRange as $date) {
-            //     $allDates[] = $date->format('Y-m-d');
-            // }
-
             // Получение текущей даты
             $currentDate = new \DateTime();
             $currentDate->setTime(0, 0, 0);
@@ -123,61 +118,22 @@ class UserController extends AbstractController
                 return $date['date']->format('Y-m-d');
             }, $unavailableDates);
     
-            // Фильтруем доступные даты, оставляя только те, которых нет в недоступных датах
-            // $availableDates = array_diff($allDates, $unavailableDates);
     
             return new JsonResponse([
-                // 'availableDates' => $availableDates,
                 'unavailableDates' => $unavailableDates,
                 'DuserId' => $userId
             ]);
-            // if (empty($unavailableDates)) {
-            //     // Если нет недоступных дат, делаем все даты на ближайший месяц доступными
-            //     $startDate = new \DateTime();
-            //     $endDate = (new \DateTime())->modify('+1 month');
-
-            //     $interval = new \DateInterval('P1D');
-            //     $dateRange = new \DatePeriod($startDate, $interval, $endDate);
-
-            //     $availableDates = [];
-            //     foreach ($dateRange as $date) {
-            //         $availableDates[] = $date->format('Y-m-d');
-            //     }
-            // } else {
-            //     // Если есть недоступные даты, делаем все даты, кроме недоступных, на ближайший месяц доступными
-            //     $startDate = new \DateTime();
-            //     $endDate = (new \DateTime())->modify('+1 month');
-
-            //     $interval = new \DateInterval('P1D');
-            //     $dateRange = new \DatePeriod($startDate, $interval, $endDate);
-
-            //     $availableDates = [];
-            //     $unavailableDates = array_map(function ($date) {
-            //         return $date['date']->format('Y-m-d');
-            //     }, $unavailableDates);
-
-            //     foreach ($dateRange as $date) {
-            //         $formattedDate = $date->format('Y-m-d');
-            //         if (!in_array($formattedDate, $unavailableDates)) {
-            //             $availableDates[] = $formattedDate;
-            //         }
-            //     }
-            // }
+        
         } else {
             $userId = null;
-            // $allDates = [];
             $unavailableDates = [];
         }
 
         return new JsonResponse([
-            // 'allDates' => $allDates,
             'unavailableDates' => $unavailableDates,
             'DuserId' => $userId
         ]);
     }
-
-
-
 
     /**
      * @Route("/get-lowest-price", name="get_lowest_price", methods={"POST"})

@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 /**
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -88,12 +89,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return ['ROLE_USER'];
     }
-
-    // public function hashPassword(string $password): string
-    // {
-    //     // Хеширование пароля
-    //     return password_hash($password, PASSWORD_DEFAULT);
-    // }
 
     public function isPasswordValid(string $password): bool
 {
