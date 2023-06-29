@@ -7,10 +7,11 @@
 {% endblock %}
 
 {% block body %}
+<img src="{{ asset('images/woman.avif') }}" alt="Изображение" class="placeholder-image">
     <div class="content-container">
         <h1>Добро пожаловать</h1>
         <p>Вы находитесь на нашем сайте. Предполагается что здесь вы сможете найти полезную информацию и многое другое.</p>
-        <img src="{{ asset('images/woman.jpg') }}" alt="Изображение" class="placeholder-image">
+        
     </div>
     <div class="btn-container">
         <a href="{{ path('app_login') }}" class="btn btn-primary">Войти</a>
